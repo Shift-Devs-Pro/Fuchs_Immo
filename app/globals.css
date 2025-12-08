@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-inter: 'Inter', sans-serif;
+    --font-playfair: 'Playfair Display', serif;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply font-body text-base leading-relaxed antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-semibold text-fuchs-black;
+  }
+
+  h1 {
+    @apply text-5xl tracking-tight;
+  }
+
+  h2 {
+    @apply text-4xl tracking-tight;
+  }
+
+  h3 {
+    @apply text-3xl;
+  }
+
+  a {
+    @apply transition-colors duration-300;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-8 py-3 border border-fuchs-gold text-fuchs-black font-medium rounded transition-all duration-300 hover:bg-fuchs-gold hover:text-fuchs-white;
+  }
+
+  .btn-secondary {
+    @apply px-8 py-3 bg-fuchs-gold text-fuchs-white font-medium rounded transition-all duration-300 hover:bg-opacity-90;
+  }
+
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .separator-gold {
+    @apply border-t border-fuchs-gold;
+  }
+}
