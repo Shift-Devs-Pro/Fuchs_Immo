@@ -32,10 +32,6 @@ export default function HeroSection() {
             <div className="text-sm text-fuchs-black/60">Biens disponibles</div>
           </div>
           <div>
-            <div className="text-3xl md:text-4xl font-display text-fuchs-gold mb-2">20+</div>
-            <div className="text-sm text-fuchs-black/60">Années d&apos;expérience</div>
-          </div>
-          <div>
             <div className="text-3xl md:text-4xl font-display text-fuchs-gold mb-2">98%</div>
             <div className="text-sm text-fuchs-black/60">Clients satisfaits</div>
           </div>
