@@ -1,3 +1,9 @@
 {
-  "/page": "app/page.js"
+  "/backoffice/dashboard/page": "app/backoffice/dashboard/page.js",
+  "/backoffice/properties/new/page": "app/backoffice/properties/new/page.js",
+  "/backoffice/properties/[id]/page": "app/backoffice/properties/[id]/page.js",
+  "/page": "app/page.js",
+  "/backoffice/properties/page": "app/backoffice/properties/page.js",
+  "/backoffice/page": "app/backoffice/page.js",
+  "/proprietes/page": "app/proprietes/page.js"
 }
