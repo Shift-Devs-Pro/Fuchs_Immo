@@ -1,4 +1,4 @@
-# Documentation - Fuchs Immobilier
+# Documentation - ExpertImo
 
 ## Direction Artistique
 
@@ -42,7 +42,7 @@ Crème Léger   : #F8F8F4
 
 ### Header
 - Sticky, position top
-- Logo Fuchs Immobilier (avec placeholder pour logo)
+- Logo ExpertImo (avec placeholder pour logo)
 - Navigation horizontale
 - CTA "Estimation Gratuite"
 

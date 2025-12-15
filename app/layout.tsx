@@ -17,7 +17,7 @@ const playfair = Playfair_Display({
 })
 
 export const metadata: Metadata = {
-  title: 'Fuchs Immobilier',
+  title: 'ExpertImo',
   description: 'Votre partenaire immobilier de confiance',
 }
 

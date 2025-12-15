@@ -7,7 +7,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           <div>
             <h3 className="font-display text-2xl font-bold mb-4">
-              <span className="text-fuchs-gold">Fuchs</span> Immobilier
+              <span className="text-fuchs-gold">Expert</span>Imo
             </h3>
             <p className="text-sm mb-4">
               Votre partenaire immobilier de confiance pour tous vos projets résidentiels.
@@ -54,18 +54,18 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-2">
                 <span className="text-fuchs-gold">■</span>
-                <span>+33 1 23 45 67 89</span>
+                <span>+33 6 87 37 05 19</span>
               </li>
               <li className="flex items-center gap-2">
                 <span className="text-fuchs-gold">■</span>
-                <span>123 Avenue Example, 75001 Paris</span>
+                <span>Niedernai</span>
               </li>
             </ul>
           </div>
         </div>
 
         <div className="separator-gold mt-12 pt-8 text-center text-sm">
-          <p>&copy; {new Date().getFullYear()} Fuchs Immobilier. Tous droits réservés.</p>
+          <p>&copy; {new Date().getFullYear()} ExpertImo. Tous droits réservés.</p>
         </div>
       </div>
     </footer>

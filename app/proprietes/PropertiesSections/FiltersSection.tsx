@@ -40,7 +40,6 @@ export default function FiltersSection() {
             <option value="">Tous les types</option>
             <option value="appartement">Appartement</option>
             <option value="maison">Maison</option>
-            <option value="villa">Villa</option>
             <option value="terrain">Terrain</option>
             <option value="local-commercial">Local commercial</option>
           </select>

@@ -4,7 +4,7 @@ export default function StyleGuidePage() {
       {/* Hero */}
       <section className="bg-fuchs-cream py-16">
         <div className="container-custom">
-          <h1 className="text-center mb-4">Fuchs Immobilier</h1>
+          <h1 className="text-center mb-4">ExpertImo</h1>
           <p className="text-center text-xl">Guide de Style & Direction Artistique</p>
         </div>
       </section>

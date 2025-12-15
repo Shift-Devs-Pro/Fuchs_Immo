@@ -10,7 +10,7 @@
 import LoginForm from './LoginForm'
 
 export const metadata = {
-  title: 'Backoffice | Fuchs Immobilier',
+  title: 'Backoffice | ExpertImo',
   description: 'Accès au backoffice de gestion',
 }
 

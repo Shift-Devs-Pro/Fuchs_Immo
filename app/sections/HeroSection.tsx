@@ -18,23 +18,12 @@ export default function HeroSection() {
             Trouvez votre bien idéal
           </h1>
           <p className="text-lg md:text-xl text-fuchs-black/70 max-w-2xl mx-auto mb-8">
-            Fuchs Immobilier vous accompagne dans la recherche de votre prochain chez-vous
+            ExpertImo vous accompagne dans la recherche de votre prochain chez-vous
           </p>
         </div>
 
         <div className="max-w-4xl mx-auto">
           <SearchBar />
-        </div>
-
-        <div className="mt-12 flex flex-wrap justify-center gap-8 text-center">
-          <div>
-            <div className="text-3xl md:text-4xl font-display text-fuchs-gold mb-2">500+</div>
-            <div className="text-sm text-fuchs-black/60">Biens disponibles</div>
-          </div>
-          <div>
-            <div className="text-3xl md:text-4xl font-display text-fuchs-gold mb-2">98%</div>
-            <div className="text-sm text-fuchs-black/60">Clients satisfaits</div>
-          </div>
         </div>
       </div>
     </section>

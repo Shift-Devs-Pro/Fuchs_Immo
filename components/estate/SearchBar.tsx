@@ -27,7 +27,6 @@ export default function SearchBar() {
             <option value="">Tous</option>
             <option value="appartement">Appartement</option>
             <option value="maison">Maison</option>
-            <option value="villa">Villa</option>
           </select>
         </div>
 

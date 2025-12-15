@@ -21,10 +21,10 @@ export default function AboutPage() {
             Professionnalisme et sérénité
           </h1>
           <p className="text-lg md:text-xl text-fuchs-black/70 max-w-3xl mx-auto mb-4">
-            Conseiller immobilier indépendant EXPERTIMO, je m&apos;engage personnellement dans la réussite de vos projets immobiliers.
+            Conseiller immobilier indépendant EXPERTIMO, je m'engage personnellement dans la réussite de vos projets immobiliers.
           </p>
           <p className="text-base text-fuchs-black/60 max-w-2xl mx-auto italic">
-            &quot;Chers vendeurs, chers acquéreurs, c&apos;est avec un immense plaisir que je vous accueille dans mon univers qui s&apos;épanouit grâce à vos projets.&quot;
+            &quot;Chers vendeurs, chers acquéreurs, c'est avec un immense plaisir que je vous accueille dans mon univers qui s'épanouit grâce à vos projets.&quot;
           </p>
         </div>
       </section>

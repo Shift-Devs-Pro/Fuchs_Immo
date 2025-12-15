@@ -74,31 +74,6 @@ export default function ServicesSection() {
             </ul>
           </div>
         </div>
-
-        {/* Réseau de compétences */}
-        <div className="bg-gradient-to-br from-fuchs-gold to-fuchs-gold/80 rounded-lg p-8 text-white">
-          <div className="flex items-center mb-6">
-            <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mr-4">
-              <FileCheck className="w-6 h-6 text-white" />
-            </div>
-            <h3 className="font-display text-2xl">
-              Un réseau de compétences à votre service
-            </h3>
-          </div>
-          <p className="mb-4">
-            J&apos;ai formé autour de moi un véritable réseau de professionnels compétents qui peuvent vous accompagner :
-          </p>
-          <div className="flex flex-wrap gap-3">
-            {['Architectes', 'Notaires', 'Services juridiques', 'Courtiers', 'Artisans', 'Gestionnaires de patrimoine', 'Défiscalisation', 'Déménageurs', 'Gestion d\'immeubles'].map((partner) => (
-              <span
-                key={partner}
-                className="px-3 py-1 bg-white/20 rounded-full text-sm"
-              >
-                {partner}
-              </span>
-            ))}
-          </div>
-        </div>
       </div>
     </section>
   )

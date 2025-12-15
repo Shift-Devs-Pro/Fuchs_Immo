@@ -77,7 +77,7 @@ export default function ContactPage() {
                   <div className="ml-4">
                     <h3 className="font-semibold text-fuchs-black mb-1">Secteur d&apos;intervention</h3>
                     <p className="text-fuchs-black/70">
-                      Votre région
+                      Alsace
                     </p>
                   </div>
                 </div>

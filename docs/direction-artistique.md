@@ -1,8 +1,8 @@
-# Direction Artistique - Fuchs Immobilier
+# Direction Artistique - ExpertImo
 
 ## 1. Identité de Marque
 
-**Nom** : Fuchs Immobilier
+**Nom** : ExpertImo
 **Secteur** : Immobilier résidentiel standard
 **Positionnement** : Professionnel, sobre, élégant, moderne sans être flashy
 

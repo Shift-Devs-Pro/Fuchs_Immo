@@ -34,7 +34,7 @@ export default function StorySection() {
               className="rounded-lg shadow-xl"
             />
             <div className="absolute -bottom-6 -right-6 bg-fuchs-gold text-white p-6 rounded-lg shadow-lg">
-              <div className="text-2xl font-display mb-1">Expert</div>
+              <div className="text-2xl font-display mb-1">Grégoire FUCHS</div>
               <div className="text-sm">Réseau EXPERTIMO</div>
             </div>
           </div>

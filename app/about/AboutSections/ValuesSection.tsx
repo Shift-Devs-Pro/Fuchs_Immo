@@ -12,22 +12,22 @@ const VALUES = [
   {
     icon: Heart,
     title: 'Relations humaines',
-    description: 'Une approche humaine qui dépasse les valeurs purement commerciales du métier.',
+    description: "Une approche humaine qui dépasse les valeurs purement commerciales du métier.",
   },
   {
     icon: Shield,
     title: 'Réputation engagée',
-    description: 'J&apos;engage ma réputation sur chaque client rencontré et chaque dossier traité.',
+    description: "J'engage ma réputation sur chaque client rencontré et chaque dossier traité.",
   },
   {
     icon: Target,
     title: 'Suivi personnalisé',
-    description: 'De l&apos;estimation au notaire, je prends soin de vos projets dans leur intégralité.',
+    description: "De l'estimation au notaire, je prends soin de vos projets dans leur intégralité.",
   },
   {
     icon: Handshake,
     title: 'Interlocuteur unique',
-    description: 'Je serai votre unique interlocuteur et assurerai la gestion complète de votre dossier.',
+    description: "Je serai votre unique interlocuteur et assurerai la gestion complète de votre dossier.",
   },
 ]
 

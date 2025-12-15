@@ -21,7 +21,7 @@ export default function Header() {
         <div className="flex h-20 justify-between items-center">
           <div className="flex items-center">
             <Link href="/" className="font-display text-2xl font-bold text-fuchs-black">
-              <span className="text-fuchs-gold">Fuchs</span> Immobilier
+              <span className="text-fuchs-gold">Expert</span>Imo
             </Link>
           </div>
 
