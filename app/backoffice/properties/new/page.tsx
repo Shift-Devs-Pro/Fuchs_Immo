@@ -678,10 +678,10 @@ export default function NewPropertyPage() {
                 >
                   <Upload className="w-10 h-10 text-fuchs-gold" />
                   <p className="text-sm font-medium text-fuchs-black">
-                  {selectedFiles.length ? 'Ajouter d’autres photos' : 'Cliquez ou déposez vos photos'}
+                  {selectedFiles.length ? 'Ajouter d&apos;autres photos' : 'Cliquez ou déposez vos photos'}
                   </p>
                   <p className="text-xs text-fuchs-black/60">
-                  PNG, JPG jusqu'à 10MB — Plusieurs fichiers autorisés
+                  PNG, JPG jusqu&apos;à 10MB — Plusieurs fichiers autorisés
                   </p>
                 </label>
                 </div>
@@ -690,7 +690,7 @@ export default function NewPropertyPage() {
                 <div className="space-y-3">
                  {selectedFiles.length > 1 &&( 
                   <p className="text-sm text-fuchs-black/70">
-                    Ajustez l'ordre avant l'envoi. Vous pourrez encore réordonner ou supprimer après enregistrement.
+                    Ajustez l&apos;ordre avant l&apos;envoi. Vous pourrez encore réordonner ou supprimer après enregistrement.
                   </p>)}
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {selectedFiles.map((entry, idx) => (
@@ -698,6 +698,7 @@ export default function NewPropertyPage() {
                         key={`${entry.file.name}-${idx}`}
                         className="relative group border border-fuchs-cream rounded-lg overflow-hidden"
                       >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={entry.preview}
                           alt={entry.file.name}

@@ -309,6 +309,7 @@ export default function PropertyPhotosManager({ propertyId, onPhotosChange }: Pr
               key={photo.id}
               className="relative group border border-fuchs-cream rounded-lg overflow-hidden"
             >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={getPhotoUrl(photo.bucket_path)}
                 alt={photo.alt_text || photo.file_name}

@@ -173,11 +173,12 @@ export default function EditPropertyPage() {
 
     if (user && propertyId) {
       fetchProperty()
-      fetchExistingPhotos()
+      fetchExistingPhotosInternal()
     }
-  }, [user, propertyId])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, propertyId, toDeletePhotos])
 
-  const fetchExistingPhotos = async () => {
+  const fetchExistingPhotosInternal = async () => {
     if (!propertyId) return
     try {
       const { data, error } = await supabase
@@ -204,7 +205,8 @@ export default function EditPropertyPage() {
 
   useEffect(() => {
     // refetch when photosRefreshKey changes (after upload)
-    if (propertyId) fetchExistingPhotos()
+    if (propertyId) fetchExistingPhotosInternal()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [photosRefreshKey, propertyId])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -333,7 +335,7 @@ export default function EditPropertyPage() {
       // refresh
       setToDeletePhotos([])
       setPhotosRefreshKey((k) => k + 1)
-      fetchExistingPhotos()
+      fetchExistingPhotosInternal()
       setSuccessMessage('Photos synchronisées.')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur lors de l\'upload')
@@ -819,8 +821,8 @@ export default function EditPropertyPage() {
                 />
                 <label htmlFor="edit-photos-upload" className="cursor-pointer flex flex-col items-center text-center gap-2">
                   <Upload className="w-10 h-10 text-fuchs-gold" />
-                  <p className="text-sm font-medium text-fuchs-black">{combinedItems.some(i => i.type === 'new') ? 'Ajouter d’autres photos' : 'Cliquez ou déposez vos photos'}</p>
-                  <p className="text-xs text-fuchs-black/60">PNG, JPG jusqu'à 10MB — Plusieurs fichiers autorisés</p>
+                  <p className="text-sm font-medium text-fuchs-black">{combinedItems.some(i => i.type === 'new') ? 'Ajouter d&apos;autres photos' : 'Cliquez ou déposez vos photos'}</p>
+                  <p className="text-xs text-fuchs-black/60">PNG, JPG jusqu&apos;à 10MB — Plusieurs fichiers autorisés</p>
                 </label>
               </div>
 
@@ -830,6 +832,7 @@ export default function EditPropertyPage() {
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {combinedItems.map((item, idx) => (
                       <div key={item.id} className="relative group border border-fuchs-cream rounded-lg overflow-hidden">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={item.type === 'existing' ? getPhotoUrl(item.photo!.bucket_path) : item.entry!.preview} alt={item.type === 'existing' ? (item.photo!.alt_text || item.photo!.file_name) : item.entry!.file.name} className="w-full h-40 object-cover" />
 
                         {idx === 0 && (
