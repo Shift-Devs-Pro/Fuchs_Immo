@@ -99,50 +99,50 @@ export default function EditPropertyPage() {
   }, [])
 
   useEffect(() => {
+    const fetchProperty = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('cli_properties')
+          .select('*')
+          .eq('id', propertyId)
+          .single()
+
+        if (error) throw error
+
+        if (data) {
+          setProperty(data)
+          setFormData({
+            title: data.title,
+            description: data.description || '',
+            property_type: data.property_type,
+            transaction_type: data.transaction_type,
+            price: data.price.toString(),
+            surface: data.surface?.toString() || '',
+            rooms: data.rooms?.toString() || '',
+            bedrooms: data.bedrooms?.toString() || '',
+            bathrooms: data.bathrooms?.toString() || '',
+            address: data.address,
+            city: data.city,
+            postal_code: data.postal_code,
+            latitude: data.latitude?.toString() || '',
+            longitude: data.longitude?.toString() || '',
+            year_built: data.year_built?.toString() || '',
+            energy_class: data.energy_class || '',
+            features: data.features || [],
+            status: data.status,
+            is_featured: data.is_featured,
+            is_published: data.is_published
+          })
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Erreur lors du chargement du bien')
+      }
+    }
+
     if (user && propertyId) {
       fetchProperty()
     }
   }, [user, propertyId])
-
-  const fetchProperty = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('cli_properties')
-        .select('*')
-        .eq('id', propertyId)
-        .single()
-
-      if (error) throw error
-
-      if (data) {
-        setProperty(data)
-        setFormData({
-          title: data.title,
-          description: data.description || '',
-          property_type: data.property_type,
-          transaction_type: data.transaction_type,
-          price: data.price.toString(),
-          surface: data.surface?.toString() || '',
-          rooms: data.rooms?.toString() || '',
-          bedrooms: data.bedrooms?.toString() || '',
-          bathrooms: data.bathrooms?.toString() || '',
-          address: data.address,
-          city: data.city,
-          postal_code: data.postal_code,
-          latitude: data.latitude?.toString() || '',
-          longitude: data.longitude?.toString() || '',
-          year_built: data.year_built?.toString() || '',
-          energy_class: data.energy_class || '',
-          features: data.features || [],
-          status: data.status,
-          is_featured: data.is_featured,
-          is_published: data.is_published
-        })
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erreur lors du chargement du bien')
-    }
-  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target

@@ -31,6 +31,7 @@ export default function ContactPage() {
             <div>
               {/* Photo du conseiller */}
               <div className="mb-8">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/pics_greg.jpeg"
                   alt="Grégoire Fuchs - Conseiller EXPERTIMO"

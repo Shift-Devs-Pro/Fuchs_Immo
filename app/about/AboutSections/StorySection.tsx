@@ -28,6 +28,7 @@ export default function StorySection() {
             </div>
           </div>
           <div className="relative">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/pics_greg.jpeg"
               alt="Conseiller EXPERTIMO"

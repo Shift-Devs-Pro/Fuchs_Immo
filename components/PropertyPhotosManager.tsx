@@ -40,6 +40,26 @@ export default function PropertyPhotosManager({ propertyId, onPhotosChange }: Pr
   const [userDebug, setUserDebug] = useState<string>('')
 
   useEffect(() => {
+    const fetchPhotos = async () => {
+      if (!propertyId) return
+
+      setLoading(true)
+      try {
+        const { data, error } = await supabase
+          .from('cli_property_photos')
+          .select('*')
+          .eq('property_id', propertyId)
+          .order('display_order', { ascending: true })
+
+        if (error) throw error
+        setPhotos(data || [])
+      } catch (err) {
+        console.error('Erreur lors du chargement des photos:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
     if (propertyId) {
       fetchPhotos()
     }
@@ -55,7 +75,7 @@ export default function PropertyPhotosManager({ propertyId, onPhotosChange }: Pr
     }
   }
 
-  const fetchPhotos = async () => {
+  const refetchPhotos = async () => {
     if (!propertyId) return
 
     setLoading(true)
@@ -118,7 +138,7 @@ export default function PropertyPhotosManager({ propertyId, onPhotosChange }: Pr
       })
 
       await Promise.all(uploadPromises)
-      await fetchPhotos()
+      await refetchPhotos()
 
       if (onPhotosChange) {
         onPhotosChange()
@@ -150,7 +170,7 @@ export default function PropertyPhotosManager({ propertyId, onPhotosChange }: Pr
       if (dbError) throw dbError
 
       await reorderPhotos(photos.filter(p => p.id !== photo.id))
-      await fetchPhotos()
+      await refetchPhotos()
 
       if (onPhotosChange) {
         onPhotosChange()
