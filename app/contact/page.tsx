@@ -29,6 +29,15 @@ export default function ContactPage() {
           <div className="grid md:grid-cols-2 gap-12">
             {/* Informations de contact */}
             <div>
+              {/* Photo du conseiller */}
+              <div className="mb-8">
+                <img
+                  src="/pics_greg.jpeg"
+                  alt="Grégoire Fuchs - Conseiller EXPERTIMO"
+                  className="w-48 h-48 object-cover rounded-full shadow-lg mx-auto md:mx-0"
+                />
+              </div>
+
               <h2 className="font-display text-3xl text-fuchs-black mb-6">
                 Grégoire Fuchs
               </h2>
@@ -109,7 +118,7 @@ export default function ContactPage() {
             </div>
 
             {/* Formulaire de contact */}
-            <div className="bg-fuchs-cream rounded-lg p-8">
+            <div className="bg-fuchs-cream rounded-lg p-8 border border-fuchs-black/20">
               <h3 className="font-display text-2xl text-fuchs-black mb-6">
                 Envoyez-moi un message
               </h3>

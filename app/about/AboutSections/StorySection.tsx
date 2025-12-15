@@ -29,7 +29,7 @@ export default function StorySection() {
           </div>
           <div className="relative">
             <img
-              src="https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?auto=compress&cs=tinysrgb&w=800"
+              src="/pics_greg.jpeg"
               alt="Conseiller EXPERTIMO"
               className="rounded-lg shadow-xl"
             />

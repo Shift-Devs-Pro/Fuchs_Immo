@@ -9,7 +9,7 @@
  * Responsabilité unique : Gérer la connexion des utilisateurs autorisés.
  */
 
-import { useState, FormEvent } from 'react'
+import { useState, useEffect, FormEvent } from 'react'
 import { supabase } from '@/lib/supabase/client'
 
 export default function LoginForm() {
@@ -17,6 +17,26 @@ export default function LoginForm() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [checkingSession, setCheckingSession] = useState(true)
+
+  // Vérifier si l'utilisateur est déjà connecté
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        if (session?.user) {
+          // Utilisateur déjà connecté, rediriger vers le dashboard
+          window.location.href = '/backoffice/dashboard'
+        }
+      } catch (err) {
+        console.error('Erreur lors de la vérification de session:', err)
+      } finally {
+        setCheckingSession(false)
+      }
+    }
+
+    checkSession()
+  }, [])
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -42,6 +62,15 @@ export default function LoginForm() {
       setError('Une erreur est survenue lors de la connexion')
       setLoading(false)
     }
+  }
+
+  // Afficher un loader pendant la vérification de session
+  if (checkingSession) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-fuchs-black/60">Vérification de la session...</p>
+      </div>
+    )
   }
 
   return (

@@ -11,7 +11,7 @@ module.exports = {
         'fuchs': {
           gold: '#C19C55',
           black: '#000000',
-          white: '#FFFFFF',
+          white: '#FFFAF0',
           cream: '#F8F8F4',
         },
       },
