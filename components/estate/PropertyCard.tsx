@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase/client'
 
@@ -90,7 +91,12 @@ export default function PropertyCard({
 
         <p className="text-sm mb-6 line-clamp-2">{description}</p>
 
-        <button className="btn-primary w-full">Voir les détails</button>
+        <Link
+          href={`/proprietes/${propertyId}`}
+          className="btn-primary w-full inline-flex justify-center"
+        >
+          Voir les détails
+        </Link>
       </div>
     </div>
   )
