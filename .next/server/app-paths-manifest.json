@@ -1,9 +1,9 @@
 {
-  "/page": "app/page.js",
-  "/about/page": "app/about/page.js",
-  "/contact/page": "app/contact/page.js",
-  "/backoffice/dashboard/page": "app/backoffice/dashboard/page.js",
-  "/backoffice/contacts/page": "app/backoffice/contacts/page.js",
   "/proprietes/page": "app/proprietes/page.js",
-  "/backoffice/page": "app/backoffice/page.js"
+  "/backoffice/properties/[id]/page": "app/backoffice/properties/[id]/page.js",
+  "/backoffice/properties/page": "app/backoffice/properties/page.js",
+  "/proprietes/[id]/page": "app/proprietes/[id]/page.js",
+  "/backoffice/contacts/page": "app/backoffice/contacts/page.js",
+  "/backoffice/page": "app/backoffice/page.js",
+  "/backoffice/dashboard/page": "app/backoffice/dashboard/page.js"
 }

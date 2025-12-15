@@ -1,4 +1,4 @@
-// File: /home/project/app/backoffice/contacts/page.tsx
+// File: /Users/attilio/Epitech/sd/Fuchs/app/backoffice/contacts/page.tsx
 import * as entry from '../../../../../app/backoffice/contacts/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

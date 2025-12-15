@@ -37,6 +37,7 @@ export default function PropertyPhotosManager({ propertyId, onPhotosChange }: Pr
   const [loading, setLoading] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [dragActive, setDragActive] = useState(false)
   const [userDebug, setUserDebug] = useState<string>('')
 
   useEffect(() => {
@@ -95,9 +96,9 @@ export default function PropertyPhotosManager({ propertyId, onPhotosChange }: Pr
     }
   }
 
-  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (!files || files.length === 0) return
+  const uploadFiles = async (files: FileList | File[]) => {
+    const fileArray = Array.from(files)
+    if (!fileArray || fileArray.length === 0) return
     if (!propertyId) {
       setError('Veuillez d\'abord enregistrer la propriété avant d\'ajouter des photos')
       return
@@ -107,7 +108,7 @@ export default function PropertyPhotosManager({ propertyId, onPhotosChange }: Pr
     setError(null)
 
     try {
-      const uploadPromises = Array.from(files).map(async (file, index) => {
+      const uploadPromises = fileArray.map(async (file, index) => {
         const fileExt = file.name.split('.').pop()
         const fileName = `${propertyId}/${Date.now()}-${index}.${fileExt}`
 
@@ -148,8 +149,20 @@ export default function PropertyPhotosManager({ propertyId, onPhotosChange }: Pr
       console.error('Erreur upload:', err)
     } finally {
       setUploading(false)
-      e.target.value = ''
     }
+  }
+
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    await uploadFiles(files || [])
+    if (e.target) e.target.value = ''
+  }
+
+  const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    setDragActive(false)
+    const files = e.dataTransfer.files
+    await uploadFiles(files)
   }
 
   const handleDelete = async (photo: PropertyPhoto) => {
@@ -246,15 +259,15 @@ export default function PropertyPhotosManager({ propertyId, onPhotosChange }: Pr
 
   return (
     <div className="space-y-4">
-      {userDebug && (
-        <div className={`p-3 rounded text-sm ${userDebug.startsWith('✓') ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-          {userDebug}
-        </div>
-      )}
-
       <div>
         <label className="block text-sm font-medium mb-2">Photos du bien</label>
-        <div className="border-2 border-dashed border-fuchs-cream rounded-lg p-6 text-center">
+        <div
+          className={`border-2 border-dashed rounded-lg p-6 text-center transition-shadow ${dragActive ? 'border-fuchs-gold/80 shadow-[0_0_0_2px_rgba(178,136,44,0.12)]' : 'border-fuchs-cream'}`}
+          onDragEnter={(e) => { e.preventDefault(); setDragActive(true) }}
+          onDragOver={(e) => { e.preventDefault(); setDragActive(true) }}
+          onDragLeave={(e) => { e.preventDefault(); setDragActive(false) }}
+          onDrop={handleDrop}
+        >
           <input
             type="file"
             multiple

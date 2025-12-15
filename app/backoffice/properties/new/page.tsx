@@ -12,12 +12,23 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase/client'
 import { User } from '@supabase/supabase-js'
+import PropertyPhotosManager from '@/components/PropertyPhotosManager'
+import { Upload, ChevronUp, ChevronDown, X } from 'lucide-react'
+
+interface SelectedFileEntry {
+  file: File
+  preview: string
+}
 
 export default function NewPropertyPage() {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [propertyId, setPropertyId] = useState<string | null>(null)
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
+  const [selectedFiles, setSelectedFiles] = useState<SelectedFileEntry[]>([])
+  const [dragActive, setDragActive] = useState(false)
 
   const [formData, setFormData] = useState({
     title: '',
@@ -88,10 +99,99 @@ export default function NewPropertyPage() {
     }))
   }
 
+  const handlePhotosSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleIncomingFiles(e.target.files)
+  }
+
+  const handleIncomingFiles = (files: FileList | null) => {
+    if (!files || files.length === 0) return
+
+    const incoming = Array.from(files).map((file) => ({
+      file,
+      preview: URL.createObjectURL(file)
+    }))
+
+    // Ajoute les nouvelles photos à la fin pour respecter l'ordre d'arrivée
+    setSelectedFiles((prev) => [...prev, ...incoming])
+  }
+
+  const clearSelectedFiles = () => {
+    selectedFiles.forEach((entry) => URL.revokeObjectURL(entry.preview))
+    setSelectedFiles([])
+  }
+
+  const removeSelectedFile = (index: number) => {
+    setSelectedFiles((prev) => {
+      const toRemove = prev[index]
+      if (toRemove) URL.revokeObjectURL(toRemove.preview)
+      return prev.filter((_, i) => i !== index)
+    })
+  }
+
+  const moveSelectedFile = (index: number, direction: 'up' | 'down') => {
+    setSelectedFiles((prev) => {
+      if (direction === 'up' && index === 0) return prev
+      if (direction === 'down' && index === prev.length - 1) return prev
+
+      const next = [...prev]
+      const targetIndex = direction === 'up' ? index - 1 : index + 1
+      ;[next[index], next[targetIndex]] = [next[targetIndex], next[index]]
+      return next
+    })
+  }
+
+  const uploadSelectedPhotos = async (newPropertyId: string) => {
+    if (selectedFiles.length === 0) return
+
+    // Récupère l'ordre actuel pour chaîner correctement
+    let startOrder = 0
+    const { data: existing, error: existingError } = await supabase
+      .from('cli_property_photos')
+      .select('display_order')
+      .eq('property_id', newPropertyId)
+
+    if (!existingError && existing) {
+      const maxOrder = existing.reduce((acc, item) => Math.max(acc, item.display_order ?? 0), 0)
+      startOrder = existing.length ? maxOrder + 1 : 0
+    }
+
+    for (const [index, entry] of selectedFiles.entries()) {
+      const { file } = entry
+      const fileExt = file.name.split('.').pop() || 'jpg'
+      const fileName = `${newPropertyId}/${Date.now()}-${index}.${fileExt}`
+
+      const { error: uploadError } = await supabase.storage
+        .from('pics')
+        .upload(fileName, file, {
+          cacheControl: '3600',
+          upsert: false
+        })
+
+      if (uploadError) throw uploadError
+
+      const { error: dbError } = await supabase
+        .from('cli_property_photos')
+        .insert({
+          property_id: newPropertyId,
+          bucket_path: fileName,
+          display_order: startOrder + index,
+          file_name: file.name,
+          file_size: file.size,
+          mime_type: file.type,
+          alt_text: null
+        })
+
+      if (dbError) throw dbError
+    }
+
+    clearSelectedFiles()
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
     setSaving(true)
+    setSuccessMessage(null)
 
     try {
       if (!formData.title || !formData.property_type || !formData.price || !formData.address || !formData.city || !formData.postal_code) {
@@ -118,19 +218,35 @@ export default function NewPropertyPage() {
         features: formData.features,
         status: formData.status,
         is_featured: formData.is_featured,
-        is_published: formData.is_published,
-        created_by: user?.id
+        is_published: formData.is_published
       }
 
-      const { data, error } = await supabase
-        .from('cli_properties')
-        .insert([propertyData])
-        .select()
-        .single()
+      let newPropertyId = propertyId
 
-      if (error) throw error
+      if (!propertyId) {
+        const { data, error } = await supabase
+          .from('cli_properties')
+          .insert([{ ...propertyData, created_by: user?.id }])
+          .select()
+          .single()
 
-      window.location.href = `/backoffice/properties/${data.id}`
+        if (error) throw error
+        newPropertyId = data.id
+        setPropertyId(data.id)
+      } else {
+        const { error } = await supabase
+          .from('cli_properties')
+          .update(propertyData)
+          .eq('id', propertyId)
+
+        if (error) throw error
+      }
+
+      if (newPropertyId) {
+        await uploadSelectedPhotos(newPropertyId)
+      }
+
+      setSuccessMessage('Bien enregistré. Les photos sont synchronisées.')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Une erreur est survenue')
     } finally {
@@ -202,6 +318,11 @@ export default function NewPropertyPage() {
           {error && (
             <div className="mb-6 p-4 bg-red-100 border border-red-300 text-red-800 rounded">
               {error}
+            </div>
+          )}
+          {successMessage && (
+            <div className="mb-6 p-4 bg-green-100 border border-green-300 text-green-800 rounded">
+              {successMessage}
             </div>
           )}
 
@@ -519,6 +640,121 @@ export default function NewPropertyPage() {
               </div>
             </div>
 
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-medium border-b border-fuchs-cream pb-2">Photos</h2>
+              </div>
+
+                <div
+                className={`border-2 border-dashed rounded-lg p-6 bg-white transition-shadow ${dragActive ? 'border-fuchs-gold/80 shadow-[0_0_0_2px_rgba(178,136,44,0.12)]' : 'border-fuchs-cream'}`}
+                onMouseEnter={(e: React.MouseEvent<HTMLDivElement>) => {
+                  const el = e.currentTarget as HTMLDivElement
+                  if (!dragActive) el.style.boxShadow = '0 0 0 1px rgba(178, 136, 44, 0.95)'
+                }}
+                onMouseLeave={(e: React.MouseEvent<HTMLDivElement>) => {
+                  const el = e.currentTarget as HTMLDivElement
+                  if (!dragActive) el.style.boxShadow = ''
+                }}
+                onDragEnter={(e) => { e.preventDefault(); setDragActive(true) }}
+                onDragOver={(e) => { e.preventDefault(); setDragActive(true) }}
+                onDragLeave={(e) => { e.preventDefault(); setDragActive(false) }}
+                onDrop={(e: React.DragEvent<HTMLDivElement>) => {
+                  e.preventDefault()
+                  setDragActive(false)
+                  handleIncomingFiles(e.dataTransfer.files)
+                }}
+                >
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handlePhotosSelection}
+                  className="hidden"
+                  id="new-photos-upload"
+                />
+                <label
+                  htmlFor="new-photos-upload"
+                  className="cursor-pointer flex flex-col items-center text-center gap-2"
+                >
+                  <Upload className="w-10 h-10 text-fuchs-gold" />
+                  <p className="text-sm font-medium text-fuchs-black">
+                  {selectedFiles.length ? 'Ajouter d’autres photos' : 'Cliquez ou déposez vos photos'}
+                  </p>
+                  <p className="text-xs text-fuchs-black/60">
+                  PNG, JPG jusqu'à 10MB — Plusieurs fichiers autorisés
+                  </p>
+                </label>
+                </div>
+
+              {selectedFiles.length > 0 && (
+                <div className="space-y-3">
+                 {selectedFiles.length > 1 &&( 
+                  <p className="text-sm text-fuchs-black/70">
+                    Ajustez l'ordre avant l'envoi. Vous pourrez encore réordonner ou supprimer après enregistrement.
+                  </p>)}
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {selectedFiles.map((entry, idx) => (
+                      <div
+                        key={`${entry.file.name}-${idx}`}
+                        className="relative group border border-fuchs-cream rounded-lg overflow-hidden"
+                      >
+                        <img
+                          src={entry.preview}
+                          alt={entry.file.name}
+                          className="w-full h-40 object-cover"
+                        />
+
+                        {idx === 0 && (
+                          <div className="absolute top-2 left-2 bg-fuchs-gold text-fuchs-white px-2 py-1 rounded text-xs flex items-center gap-1">
+                            Principale
+                          </div>
+                        )}
+
+                        {idx > 0 && (<div className="absolute top-2 left-2 bg-fuchs-white/90 text-xs px-2 py-1 rounded">#{idx + 1}</div>)}
+
+                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                          {idx > 0 && (
+                            <button
+                              type="button"
+                              onClick={() => moveSelectedFile(idx, 'up')}
+                              className="p-2 bg-fuchs-white text-fuchs-black rounded hover:bg-fuchs-cream"
+                              title="Monter"
+                            >
+                              <ChevronUp className="w-4 h-4" />
+                            </button>
+                          )}
+
+                          {idx < selectedFiles.length - 1 && (
+                            <button
+                              type="button"
+                              onClick={() => moveSelectedFile(idx, 'down')}
+                              className="p-2 bg-fuchs-white text-fuchs-black rounded hover:bg-fuchs-cream"
+                              title="Descendre"
+                            >
+                              <ChevronDown className="w-4 h-4" />
+                            </button>
+                          )}
+
+                          <button
+                            type="button"
+                            onClick={() => removeSelectedFile(idx)}
+                            className="p-2 bg-red-500 text-white rounded hover:bg-red-600"
+                            title="Supprimer"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+
+                        <div className="p-2 bg-fuchs-white">
+                          <p className="text-xs text-fuchs-black/70 truncate">{entry.file.name}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
             <div className="flex justify-end space-x-4 pt-6 border-t border-fuchs-cream">
               <a
                 href="/backoffice/properties"
@@ -535,6 +771,28 @@ export default function NewPropertyPage() {
               </button>
             </div>
           </form>
+
+          {propertyId && (
+            <div className="mt-10 border-t border-fuchs-cream pt-8">
+              <h2 className="text-xl font-medium mb-4">Photos du bien</h2>
+              <p className="text-sm text-fuchs-black/70 mb-4">
+                Ajoutez les photos pour ce bien. Les nouvelles seront ajoutées à la fin ; réordonnez ou supprimez si besoin. La première photo est utilisée comme principale.
+              </p>
+              <PropertyPhotosManager
+                propertyId={propertyId}
+                onPhotosChange={() => setSuccessMessage('Photos mises à jour')}
+              />
+
+              <div className="mt-6 flex gap-3">
+                <a
+                  href={`/backoffice/properties/${propertyId}`}
+                  className="px-4 py-2 bg-fuchs-cream text-fuchs-black rounded hover:bg-fuchs-cream/70 transition-colors"
+                >
+                  Ouvrir la fiche de ce bien
+                </a>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </main>
