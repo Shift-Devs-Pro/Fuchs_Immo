@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase/client'
+import PropertyDetailModal from './PropertyDetailModal'
 
 interface PropertyCardProps {
   propertyId: string
@@ -25,6 +26,7 @@ export default function PropertyCard({
   imageUrl,
 }: PropertyCardProps) {
   const [mainPhoto, setMainPhoto] = useState<string | null>(imageUrl || null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   useEffect(() => {
     const fetchMainPhoto = async () => {
@@ -90,8 +92,20 @@ export default function PropertyCard({
 
         <p className="text-sm mb-6 line-clamp-2">{description}</p>
 
-        <button className="btn-primary w-full">Voir les détails</button>
+        <button 
+          className="btn-primary w-full"
+          onClick={() => setIsModalOpen(true)}
+        >
+          Voir les détails
+        </button>
       </div>
+
+      {/* Modal détails */}
+      <PropertyDetailModal
+        propertyId={propertyId}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   )
 }
