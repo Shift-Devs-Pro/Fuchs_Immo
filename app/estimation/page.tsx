@@ -8,12 +8,12 @@
 
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { MapPin, Home, Ruler, Bath, BedDouble, DoorOpen, Calendar, LandPlot, Send, CheckCircle, AlertCircle } from 'lucide-react'
 import { supabase } from '@/lib/supabase/client'
 
-export default function EstimationPage() {
+function EstimationForm() {
   const searchParams = useSearchParams()
   
   const [formData, setFormData] = useState({
@@ -565,5 +565,17 @@ export default function EstimationPage() {
         </div>
       </section>
     </>
+  )
+}
+
+export default function EstimationPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-fuchs-white pt-24 pb-16 flex items-center justify-center">
+        <p className="text-lg text-fuchs-black/70">Chargement...</p>
+      </div>
+    }>
+      <EstimationForm />
+    </Suspense>
   )
 }
