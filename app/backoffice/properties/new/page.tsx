@@ -37,6 +37,7 @@ export default function NewPropertyPage() {
     property_type: '',
     transaction_type: 'sale' as 'sale' | 'rent',
     price: '',
+    charge_copro: '',
     surface: '',
     rooms: '',
     bedrooms: '',
@@ -206,6 +207,7 @@ export default function NewPropertyPage() {
         property_type: formData.property_type,
         transaction_type: formData.transaction_type,
         price: parseFloat(formData.price),
+        charge_copro: formData.charge_copro ? parseInt(formData.charge_copro) : null,
         surface: formData.surface ? parseFloat(formData.surface) : null,
         rooms: formData.rooms ? parseInt(formData.rooms) : null,
         bedrooms: formData.bedrooms ? parseInt(formData.bedrooms) : null,
@@ -423,6 +425,21 @@ export default function NewPropertyPage() {
                   step="0.01"
                   className="w-full px-4 py-2 border border-fuchs-cream rounded focus:outline-none focus:ring-2 focus:ring-fuchs-gold"
                   placeholder="Ex: 450000"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Charges de copropriété (€/mois)
+                </label>
+                <input
+                  type="number"
+                  name="charge_copro"
+                  value={formData.charge_copro}
+                  onChange={handleChange}
+                  min="0"
+                  className="w-full px-4 py-2 border border-fuchs-cream rounded focus:outline-none focus:ring-2 focus:ring-fuchs-gold"
+                  placeholder="Ex: 150"
                 />
               </div>
             </div>

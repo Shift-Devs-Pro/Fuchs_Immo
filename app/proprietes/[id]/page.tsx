@@ -13,6 +13,7 @@ interface Property {
   property_type: string
   transaction_type: 'sale' | 'rent'
   price: number
+  charge_copro: number | null
   surface: number | null
   rooms: number | null
   bedrooms: number | null
@@ -77,6 +78,7 @@ export default function PropertyDetailPage() {
             property_type,
             transaction_type,
             price,
+            charge_copro,
             surface,
             rooms,
             bedrooms,
@@ -331,6 +333,12 @@ export default function PropertyDetailPage() {
                     <span className="text-fuchs-black/60">Classe énergie</span>
                     <span>{property.energy_class || '—'}</span>
                   </div>
+                  {property.charge_copro && (
+                    <div className="flex justify-between">
+                      <span className="text-fuchs-black/60">Charges de copropriété</span>
+                      <span>{property.charge_copro} €/mois</span>
+                    </div>
+                  )}
                   <div className="flex justify-between">
                     <span className="text-fuchs-black/60">Type de transaction</span>
                     <span>{transactionLabels[property.transaction_type]}</span>
