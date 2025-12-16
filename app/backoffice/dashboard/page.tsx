@@ -20,7 +20,9 @@ export default function DashboardPage() {
     properties: 0,
     publishedProperties: 0,
     contacts: 0,
-    newContacts: 0
+    newContacts: 0,
+    estimations: 0,
+    newEstimations: 0
   })
 
   useEffect(() => {
@@ -75,11 +77,22 @@ export default function DashboardPage() {
         .select('*', { count: 'exact', head: true })
         .eq('status', 'new')
 
+      const { count: estimationsCount } = await supabase
+        .from('cli_estimation_requests')
+        .select('*', { count: 'exact', head: true })
+
+      const { count: newEstimationsCount } = await supabase
+        .from('cli_estimation_requests')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'new')
+
       setStats({
         properties: propertiesCount || 0,
         publishedProperties: publishedCount || 0,
         contacts: contactsCount || 0,
-        newContacts: newContactsCount || 0
+        newContacts: newContactsCount || 0,
+        estimations: estimationsCount || 0,
+        newEstimations: newEstimationsCount || 0
       })
     } catch (error) {
       console.error('Erreur lors du chargement des statistiques:', error)
@@ -117,6 +130,10 @@ export default function DashboardPage() {
                 <span className="text-fuchs-black/30">•</span>
                 <a href="/backoffice/contacts" className="text-fuchs-black/60 hover:text-fuchs-gold transition-colors">
                   Contacts
+                </a>
+                <span className="text-fuchs-black/30">•</span>
+                <a href="/backoffice/estimations" className="text-fuchs-black/60 hover:text-fuchs-gold transition-colors">
+                  Estimations
                 </a>
               </nav>
             </div>
@@ -181,6 +198,16 @@ export default function DashboardPage() {
                   Demandes traitées
                 </p>
               </a>
+              <a
+                href="/backoffice/estimations"
+                className="p-6 bg-fuchs-cream rounded-lg hover:bg-fuchs-gold/10 transition-colors cursor-pointer"
+              >
+                <h3 className="font-medium mb-2 text-fuchs-black/70">Estimations</h3>
+                <p className="text-3xl font-display text-fuchs-gold">{stats.estimations}</p>
+                <p className="text-sm text-fuchs-black/60 mt-2">
+                  {stats.newEstimations} nouvelles
+                </p>
+              </a>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
@@ -203,7 +230,13 @@ export default function DashboardPage() {
                     href="/backoffice/contacts"
                     className="block px-4 py-3 bg-fuchs-cream text-fuchs-black rounded hover:bg-fuchs-cream/70 transition-colors text-center"
                   >
-                    Voir les demandes
+                    Voir les demandes de contact
+                  </a>
+                  <a
+                    href="/backoffice/estimations"
+                    className="block px-4 py-3 bg-fuchs-cream text-fuchs-black rounded hover:bg-fuchs-cream/70 transition-colors text-center"
+                  >
+                    Voir les demandes d&apos;estimation
                   </a>
                 </div>
               </div>
@@ -211,7 +244,7 @@ export default function DashboardPage() {
               <div className="p-6 border border-fuchs-cream rounded-lg">
                 <h3 className="font-medium text-lg mb-4">Activité récente</h3>
                 <div className="space-y-3 text-sm text-fuchs-black/70">
-                  {stats.properties === 0 && stats.contacts === 0 ? (
+                  {stats.properties === 0 && stats.contacts === 0 && stats.estimations === 0 ? (
                     <p>Aucune activité récente</p>
                   ) : (
                     <>
@@ -225,7 +258,13 @@ export default function DashboardPage() {
                         <p>• {stats.contacts} demande(s) de contact</p>
                       )}
                       {stats.newContacts > 0 && (
-                        <p className="text-fuchs-gold font-medium">• {stats.newContacts} nouvelle(s) demande(s) à traiter</p>
+                        <p className="text-fuchs-gold font-medium">• {stats.newContacts} nouvelle(s) demande(s) de contact à traiter</p>
+                      )}
+                      {stats.estimations > 0 && (
+                        <p>• {stats.estimations} demande(s) d&apos;estimation</p>
+                      )}
+                      {stats.newEstimations > 0 && (
+                        <p className="text-fuchs-gold font-medium">• {stats.newEstimations} nouvelle(s) demande(s) d&apos;estimation à traiter</p>
                       )}
                     </>
                   )}
