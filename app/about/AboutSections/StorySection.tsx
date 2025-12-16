@@ -33,6 +33,7 @@ export default function StorySection() {
               src="/pics_greg.jpeg"
               alt="Conseiller EXPERTIMO"
               className="rounded-lg shadow-xl"
+              loading="lazy"
             />
             <div className="absolute -bottom-6 -right-6 bg-fuchs-gold text-white p-6 rounded-lg shadow-lg">
               <div className="text-2xl font-display mb-1">Grégoire FUCHS</div>

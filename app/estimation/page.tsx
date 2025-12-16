@@ -8,11 +8,14 @@
 
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { MapPin, Home, Ruler, Bath, BedDouble, DoorOpen, Calendar, LandPlot, Send, CheckCircle, AlertCircle } from 'lucide-react'
 import { supabase } from '@/lib/supabase/client'
 
 export default function EstimationPage() {
+  const searchParams = useSearchParams()
+  
   const [formData, setFormData] = useState({
     // Informations personnelles
     nom: '',
@@ -36,6 +39,22 @@ export default function EstimationPage() {
     parking: '',
     commentaires: ''
   })
+
+  // Préremplir les champs depuis les paramètres URL
+  useEffect(() => {
+    const ville = searchParams.get('ville')
+    const typeBien = searchParams.get('typeBien')
+    const surface = searchParams.get('surface')
+    
+    if (ville || typeBien || surface) {
+      setFormData(prev => ({
+        ...prev,
+        ville: ville || prev.ville,
+        typeBien: typeBien || prev.typeBien,
+        surfaceHabitable: surface || prev.surfaceHabitable
+      }))
+    }
+  }, [searchParams])
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)

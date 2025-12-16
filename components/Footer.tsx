@@ -50,7 +50,7 @@ export default function Footer() {
             <ul className="space-y-2 text-sm">
               <li className="flex items-center gap-2">
                 <span className="text-fuchs-gold">■</span>
-                <span>contact@fuchs-immobilier.fr</span>
+                <span>N/A</span>
               </li>
               <li className="flex items-center gap-2">
                 <span className="text-fuchs-gold">■</span>

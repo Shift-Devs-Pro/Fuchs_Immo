@@ -86,6 +86,7 @@ export default function ContactPage() {
                   src="/pics_greg.jpeg"
                   alt="Grégoire Fuchs - Conseiller EXPERTIMO"
                   className="w-48 h-48 object-cover rounded-full shadow-lg mx-auto md:mx-0"
+                  loading="lazy"
                 />
               </div>
 
@@ -121,10 +122,10 @@ export default function ContactPage() {
                   <div className="ml-4">
                     <h3 className="font-semibold text-fuchs-black mb-1">Email</h3>
                     <a
-                      href="mailto:contact@expertimo-fuchs.fr"
+                      href="mailto:N/A"
                       className="text-fuchs-black/70 hover:text-fuchs-gold transition-colors"
                     >
-                      contact@expertimo-fuchs.fr
+                      N/A
                     </a>
                   </div>
                 </div>

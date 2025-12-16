@@ -57,7 +57,10 @@ export default function PropertyCard({
   }, [propertyId, imageUrl])
 
   return (
-    <div className="bg-fuchs-white border border-fuchs-cream shadow-soft rounded transition-all duration-400 hover:shadow-hover overflow-hidden group">
+    <Link 
+      href={`/proprietes/${propertyId}`}
+      className="block bg-fuchs-white border border-fuchs-cream shadow-soft rounded transition-all duration-400 hover:shadow-hover overflow-hidden group cursor-pointer"
+    >
       <div className="relative h-64 bg-fuchs-cream overflow-hidden">
         {mainPhoto ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -91,13 +94,10 @@ export default function PropertyCard({
 
         <p className="text-sm mb-6 line-clamp-2">{description}</p>
 
-        <Link
-          href={`/proprietes/${propertyId}`}
-          className="btn-primary w-full inline-flex justify-center"
-        >
+        <span className="btn-primary w-full inline-flex justify-center">
           Voir les détails
-        </Link>
+        </span>
       </div>
-    </div>
+    </Link>
   )
 }

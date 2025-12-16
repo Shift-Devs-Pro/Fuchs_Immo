@@ -365,14 +365,14 @@ export default function PropertyDetailPage() {
               <div>
                 <h2 className="text-xl font-semibold mb-4">Galerie photos</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {photos.slice(1).map((photo, index) => (
+                  {photos.map((photo, index) => (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       key={photo.id}
                       src={photo.url}
                       alt={`${property.title} - photo ${photo.display_order + 1}`}
                       className="w-full h-40 object-cover rounded-lg shadow-soft cursor-pointer"
-                      onClick={() => openLightbox(index + 1)}
+                      onClick={() => openLightbox(index)}
                     />
                   ))}
                 </div>
@@ -384,11 +384,11 @@ export default function PropertyDetailPage() {
       </main>
 
       {isLightboxOpen && mainPhoto && property && (
-      <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex flex-col">
-        <div className="absolute top-4 right-4 flex gap-2">
+      <div className="fixed inset-0 z-50 bg-black/90 flex flex-col">
+        <div className="absolute top-4 right-4 flex gap-2 z-40">
           <button
             onClick={closeLightbox}
-            className="bg-fuchs-gold text-fuchs-white px-3 py-2 rounded hover:bg-fuchs-gold/90"
+            className="bg-fuchs-gold text-fuchs-white px-4 py-2 rounded hover:bg-fuchs-gold/90"
             aria-label="Fermer"
           >
             Fermer
@@ -402,14 +402,12 @@ export default function PropertyDetailPage() {
             if (e.target === e.currentTarget) closeLightbox()
           }}
         >
-          <div className={`relative max-h-[80vh] max-w-5xl w-full h-full flex items-center justify-center ${
-              zoomLevel === 1 ? 'cursor-zoom-in' : 'cursor-zoom-out'
-            }`}>
+          <div className="relative max-h-[90vh] max-w-6xl w-full h-full flex items-center justify-center">
             {photos.length > 1 && (
               <button
                 aria-label="Photo précédente"
                 onClick={goPrev}
-                className="absolute left-0 md:-left-12 top-1/2 -translate-y-1/2 bg-fuchs-black/60 text-fuchs-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-fuchs-black/80 z-30"
+                className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 bg-fuchs-black/60 text-fuchs-white w-12 h-12 rounded-full flex items-center justify-center hover:bg-fuchs-black/80 z-30 text-2xl"
               >
                 ‹
               </button>
@@ -419,20 +417,14 @@ export default function PropertyDetailPage() {
             <img
               src={mainPhoto || undefined}
               alt={property.title}
-              className="max-h-[80vh] max-w-full object-contain select-none z-10"
-              style={{ transform: `scale(${zoomLevel})`, transition: 'transform 200ms ease' }}
-              onClick={(e) => {
-                // prevent overlay click
-                e.stopPropagation()
-                toggleZoom()
-              }}
+              className="max-h-[90vh] max-w-full object-contain select-none z-10"
             />
 
             {photos.length > 1 && (
               <button
                 aria-label="Photo suivante"
                 onClick={goNext}
-                className="absolute right-0 md:-right-12 top-1/2 -translate-y-1/2 bg-fuchs-black/60 text-fuchs-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-fuchs-black/80 z-30"
+                className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 bg-fuchs-black/60 text-fuchs-white w-12 h-12 rounded-full flex items-center justify-center hover:bg-fuchs-black/80 z-30 text-2xl"
               >
                 ›
               </button>
@@ -441,25 +433,10 @@ export default function PropertyDetailPage() {
         </div>
 
         {photos.length > 1 && (
-          <div className="bg-fuchs-black/60 py-3 px-4 overflow-x-auto">
-            <div className="flex gap-3 min-w-full">
-              {photos.map((photo, index) => (
-                <button
-                  key={photo.id}
-                  onClick={() => goToPhoto(index)}
-                  className={`relative border-2 rounded-md overflow-hidden ${
-                    index === currentPhotoIndex ? 'border-fuchs-gold' : 'border-transparent'
-                  }`}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={photo.url}
-                    alt={`${property.title} miniature ${index + 1}`}
-                    className="h-16 w-24 object-cover"
-                  />
-                </button>
-              ))}
-            </div>
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-fuchs-black/60 px-4 py-2 rounded-full">
+            <span className="text-white text-sm">
+              {currentPhotoIndex + 1} / {photos.length}
+            </span>
           </div>
         )}
         </div>

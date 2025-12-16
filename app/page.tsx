@@ -9,11 +9,13 @@
 
 import HeroSection from './sections/HeroSection'
 import FeaturedPropertiesSection from './sections/FeaturedPropertiesSection'
+import EstimationSection from './sections/EstimationSection'
 
 export default function HomePage() {
   return (
     <>
       <HeroSection />
+      <EstimationSection />
       <FeaturedPropertiesSection />
     </>
   )
