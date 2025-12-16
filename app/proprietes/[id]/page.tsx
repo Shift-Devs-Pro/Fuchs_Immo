@@ -9,6 +9,7 @@ interface Property {
   id: string
   title: string
   description: string | null
+  reference: number | null
   property_type: string
   transaction_type: 'sale' | 'rent'
   price: number
@@ -72,6 +73,7 @@ export default function PropertyDetailPage() {
             id,
             title,
             description,
+            reference,
             property_type,
             transaction_type,
             price,
@@ -269,7 +271,7 @@ export default function PropertyDetailPage() {
             <div className="flex flex-col md:flex-row justify-between gap-4">
               <div>
                 <p className="uppercase tracking-[0.18em] text-xs text-fuchs-black/60 mb-2">
-                  {property.property_type} • {transactionLabels[property.transaction_type]}
+                  {property.reference && <span>Réf. {property.reference} • </span>}{property.property_type} • {transactionLabels[property.transaction_type]}
                 </p>
                 <h1 className="text-3xl font-display mb-2">{property.title}</h1>
                 <p className="text-fuchs-black/70">

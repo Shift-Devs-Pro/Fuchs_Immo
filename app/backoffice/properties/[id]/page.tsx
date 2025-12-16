@@ -84,6 +84,7 @@ export default function EditPropertyPage() {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
+    reference: '',
     property_type: '',
     transaction_type: 'sale' as 'sale' | 'rent',
     price: '',
@@ -146,6 +147,7 @@ export default function EditPropertyPage() {
           setFormData({
             title: data.title,
             description: data.description || '',
+            reference: data.reference?.toString() || '',
             property_type: data.property_type,
             transaction_type: data.transaction_type,
             price: data.price.toString(),
@@ -365,13 +367,14 @@ export default function EditPropertyPage() {
     setSaving(true)
 
     try {
-      if (!formData.title || !formData.property_type || !formData.price || !formData.address || !formData.city || !formData.postal_code) {
+      if (!formData.title || !formData.property_type || !formData.price || !formData.city || !formData.postal_code) {
         throw new Error('Veuillez remplir tous les champs obligatoires')
       }
 
       const propertyData = {
         title: formData.title,
         description: formData.description || null,
+        reference: formData.reference ? parseInt(formData.reference) : null,
         property_type: formData.property_type,
         transaction_type: formData.transaction_type,
         price: parseFloat(formData.price),
@@ -379,7 +382,7 @@ export default function EditPropertyPage() {
         rooms: formData.rooms ? parseInt(formData.rooms) : null,
         bedrooms: formData.bedrooms ? parseInt(formData.bedrooms) : null,
         bathrooms: formData.bathrooms ? parseInt(formData.bathrooms) : null,
-        address: formData.address,
+        address: formData.address || null,
         city: formData.city,
         postal_code: formData.postal_code,
         latitude: formData.latitude ? parseFloat(formData.latitude) : null,
@@ -494,6 +497,23 @@ export default function EditPropertyPage() {
                   className="w-full px-4 py-2 border border-fuchs-cream rounded focus:outline-none focus:ring-2 focus:ring-fuchs-gold"
                   placeholder="Ex: Magnifique villa avec vue sur la mer"
                 />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    Référence
+                  </label>
+                  <input
+                    type="number"
+                    name="reference"
+                    value={formData.reference}
+                    onChange={handleChange}
+                    min="0"
+                    className="w-full px-4 py-2 border border-fuchs-cream rounded focus:outline-none focus:ring-2 focus:ring-fuchs-gold"
+                    placeholder="Ex: 12345"
+                  />
+                </div>
               </div>
 
               <div>
@@ -676,14 +696,13 @@ export default function EditPropertyPage() {
 
               <div>
                 <label className="block text-sm font-medium mb-2">
-                  Adresse <span className="text-red-500">*</span>
+                  Adresse
                 </label>
                 <input
                   type="text"
                   name="address"
                   value={formData.address}
                   onChange={handleChange}
-                  required
                   className="w-full px-4 py-2 border border-fuchs-cream rounded focus:outline-none focus:ring-2 focus:ring-fuchs-gold"
                   placeholder="Ex: 15 rue de la Paix"
                 />
