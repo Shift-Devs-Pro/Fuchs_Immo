@@ -24,12 +24,12 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/catalogue" className="hover:text-fuchs-gold">
-                  Nos Biens
+                  Trouvez votre bien
                 </Link>
               </li>
               <li>
                 <Link href="/about" className="hover:text-fuchs-gold">
-                  À propos
+                  Nos valeurs
                 </Link>
               </li>
               <li>

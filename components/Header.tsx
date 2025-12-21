@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { Menu, X } from 'lucide-react'
 import { useState } from 'react'
 
@@ -20,8 +21,15 @@ export default function Header() {
       <nav className="container-custom">
         <div className="flex h-20 justify-between items-center">
           <div className="flex items-center">
-            <Link href="/" className="font-display text-2xl font-bold text-fuchs-black">
-              <span className="text-fuchs-gold">Expert</span>Imo
+            <Link href="/" className="flex items-center">
+              <Image 
+                src="/image.png" 
+                alt="Réseau Expertimo" 
+                width={240} 
+                height={80}
+                className="h-16 w-auto"
+                priority
+              />
             </Link>
           </div>
 
@@ -37,13 +45,13 @@ export default function Header() {
               href="/proprietes"
               className="text-fuchs-black font-medium hover:text-fuchs-gold transition-colors duration-300"
             >
-              Nos Biens
+              Trouvez votre bien
             </Link>
             <Link
               href="/about"
               className="text-fuchs-black font-medium hover:text-fuchs-gold transition-colors duration-300"
             >
-              À propos
+              Nos valeurs
             </Link>
             <Link
               href="/contact"
@@ -92,14 +100,14 @@ export default function Header() {
             onClick={closeMobileMenu}
             className="text-fuchs-black text-lg font-medium hover:text-fuchs-gold transition-colors duration-300"
           >
-            Nos Biens
+            Trouvez votre bien
           </Link>
           <Link
             href="/about"
             onClick={closeMobileMenu}
             className="text-fuchs-black text-lg font-medium hover:text-fuchs-gold transition-colors duration-300"
           >
-            À propos
+            Nos valeurs
           </Link>
           <Link
             href="/contact"

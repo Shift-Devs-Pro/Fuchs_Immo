@@ -34,6 +34,9 @@ function EstimationForm() {
     nombreChambres: '',
     nombreSallesDeBain: '',
     anneeConstruction: '',
+    placesParking: '',
+    placesGarage: '',
+    viabilise: '',
     // Informations complémentaires
     etatGeneral: '',
     parking: '',
@@ -42,16 +45,20 @@ function EstimationForm() {
 
   // Préremplir les champs depuis les paramètres URL
   useEffect(() => {
+    const numero = searchParams.get('numero')
+    const rue = searchParams.get('rue')
+    const codePostal = searchParams.get('codePostal')
     const ville = searchParams.get('ville')
-    const typeBien = searchParams.get('typeBien')
-    const surface = searchParams.get('surface')
     
-    if (ville || typeBien || surface) {
+    if (numero || rue || codePostal || ville) {
+      // Construire l'adresse complète à partir du numéro et de la rue
+      const adresseComplete = [numero, rue].filter(Boolean).join(' ')
+      
       setFormData(prev => ({
         ...prev,
-        ville: ville || prev.ville,
-        typeBien: typeBien || prev.typeBien,
-        surfaceHabitable: surface || prev.surfaceHabitable
+        adresse: adresseComplete || prev.adresse,
+        codePostal: codePostal || prev.codePostal,
+        ville: ville || prev.ville
       }))
     }
   }, [searchParams])
@@ -82,14 +89,14 @@ function EstimationForm() {
           code_postal: formData.codePostal,
           ville: formData.ville,
           type_bien: formData.typeBien,
-          surface_habitable: parseInt(formData.surfaceHabitable),
+          surface_habitable: formData.surfaceHabitable ? parseInt(formData.surfaceHabitable) : null,
           surface_terrain: formData.surfaceTerrain ? parseInt(formData.surfaceTerrain) : null,
-          nombre_pieces: formData.nombrePieces,
-          nombre_chambres: formData.nombreChambres,
-          nombre_salles_de_bain: formData.nombreSallesDeBain,
+          nombre_pieces: formData.nombrePieces || null,
+          nombre_chambres: formData.nombreChambres || null,
+          nombre_salles_de_bain: formData.nombreSallesDeBain || null,
           annee_construction: formData.anneeConstruction ? parseInt(formData.anneeConstruction) : null,
           etat_general: formData.etatGeneral || null,
-          parking: formData.parking || null,
+          parking: formData.placesParking || null,
           commentaires: formData.commentaires || null
         })
 
@@ -289,11 +296,12 @@ function EstimationForm() {
                   <label className="block text-sm font-medium text-fuchs-black mb-3">
                     Type de bien *
                   </label>
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {[
                       { value: 'appartement', label: 'Appartement', icon: '🏢' },
                       { value: 'maison', label: 'Maison', icon: '🏠' },
-                      { value: 'terrain', label: 'Terrain', icon: '🌳' }
+                      { value: 'terrain', label: 'Terrain', icon: '🌳' },
+                      { value: 'local-professionnel', label: 'Local professionnel', icon: '🏪' }
                     ].map((type) => (
                       <label
                         key={type.value}
@@ -313,152 +321,318 @@ function EstimationForm() {
                           required
                         />
                         <span className="text-2xl mb-2">{type.icon}</span>
-                        <span className="text-sm font-medium text-fuchs-black">{type.label}</span>
+                        <span className="text-sm font-medium text-fuchs-black text-center">{type.label}</span>
                       </label>
                     ))}
                   </div>
                 </div>
 
-                {/* Surfaces */}
-                <div className="grid md:grid-cols-2 gap-6 mb-6">
-                  <div>
-                    <label htmlFor="surfaceHabitable" className="block text-sm font-medium text-fuchs-black mb-2">
-                      <Ruler className="w-4 h-4 inline mr-2 text-fuchs-gold" />
-                      Surface habitable (m²) *
-                    </label>
-                    <input
-                      type="number"
-                      id="surfaceHabitable"
-                      name="surfaceHabitable"
-                      required
-                      min="1"
-                      value={formData.surfaceHabitable}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 bg-fuchs-white border border-fuchs-black/10 rounded-lg focus:ring-2 focus:ring-fuchs-gold focus:border-transparent transition-all"
-                      placeholder="Ex: 120"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="surfaceTerrain" className="block text-sm font-medium text-fuchs-black mb-2">
-                      <LandPlot className="w-4 h-4 inline mr-2 text-fuchs-gold" />
-                      Surface terrain (m²)
-                    </label>
-                    <input
-                      type="number"
-                      id="surfaceTerrain"
-                      name="surfaceTerrain"
-                      min="0"
-                      value={formData.surfaceTerrain}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 bg-fuchs-white border border-fuchs-black/10 rounded-lg focus:ring-2 focus:ring-fuchs-gold focus:border-transparent transition-all"
-                      placeholder="Ex: 500"
-                    />
-                  </div>
-                </div>
+                {/* Champs conditionnels selon le type de bien */}
+                {formData.typeBien && (
+                  <div className="space-y-6">
+                    {/* Maison */}
+                    {formData.typeBien === 'maison' && (
+                      <>
+                        <div className="grid md:grid-cols-2 gap-6">
+                          <div>
+                            <label htmlFor="surfaceHabitable" className="block text-sm font-medium text-fuchs-black mb-2">
+                              <Ruler className="w-4 h-4 inline mr-2 text-fuchs-gold" />
+                              Surface habitable (m²) *
+                            </label>
+                            <input
+                              type="number"
+                              id="surfaceHabitable"
+                              name="surfaceHabitable"
+                              required
+                              min="1"
+                              value={formData.surfaceHabitable}
+                              onChange={handleChange}
+                              className="w-full px-4 py-3 bg-fuchs-white border border-fuchs-black/10 rounded-lg focus:ring-2 focus:ring-fuchs-gold focus:border-transparent transition-all"
+                              placeholder="Ex: 120"
+                            />
+                          </div>
+                          <div>
+                            <label htmlFor="surfaceTerrain" className="block text-sm font-medium text-fuchs-black mb-2">
+                              <LandPlot className="w-4 h-4 inline mr-2 text-fuchs-gold" />
+                              Surface du terrain (m²) *
+                            </label>
+                            <input
+                              type="number"
+                              id="surfaceTerrain"
+                              name="surfaceTerrain"
+                              required
+                              min="1"
+                              value={formData.surfaceTerrain}
+                              onChange={handleChange}
+                              className="w-full px-4 py-3 bg-fuchs-white border border-fuchs-black/10 rounded-lg focus:ring-2 focus:ring-fuchs-gold focus:border-transparent transition-all"
+                              placeholder="Ex: 500"
+                            />
+                          </div>
+                        </div>
+                        <div className="grid md:grid-cols-2 gap-6">
+                          <div>
+                            <label htmlFor="nombrePieces" className="block text-sm font-medium text-fuchs-black mb-2">
+                              <DoorOpen className="w-4 h-4 inline mr-2 text-fuchs-gold" />
+                              Nombre de pièces *
+                            </label>
+                            <input
+                              type="number"
+                              id="nombrePieces"
+                              name="nombrePieces"
+                              required
+                              min="1"
+                              value={formData.nombrePieces}
+                              onChange={handleChange}
+                              className="w-full px-4 py-3 bg-fuchs-white border border-fuchs-black/10 rounded-lg focus:ring-2 focus:ring-fuchs-gold focus:border-transparent transition-all"
+                              placeholder="Ex: 5"
+                            />
+                          </div>
+                          <div>
+                            <label htmlFor="anneeConstruction" className="block text-sm font-medium text-fuchs-black mb-2">
+                              <Calendar className="w-4 h-4 inline mr-2 text-fuchs-gold" />
+                              Année de construction *
+                            </label>
+                            <input
+                              type="number"
+                              id="anneeConstruction"
+                              name="anneeConstruction"
+                              required
+                              min="1800"
+                              max={new Date().getFullYear()}
+                              value={formData.anneeConstruction}
+                              onChange={handleChange}
+                              className="w-full px-4 py-3 bg-fuchs-white border border-fuchs-black/10 rounded-lg focus:ring-2 focus:ring-fuchs-gold focus:border-transparent transition-all"
+                              placeholder="Ex: 2005"
+                            />
+                          </div>
+                        </div>
+                        <div className="grid md:grid-cols-2 gap-6">
+                          <div>
+                            <label htmlFor="placesParking" className="block text-sm font-medium text-fuchs-black mb-2">
+                              Places de parking
+                            </label>
+                            <input
+                              type="number"
+                              id="placesParking"
+                              name="placesParking"
+                              min="0"
+                              value={formData.placesParking}
+                              onChange={handleChange}
+                              className="w-full px-4 py-3 bg-fuchs-white border border-fuchs-black/10 rounded-lg focus:ring-2 focus:ring-fuchs-gold focus:border-transparent transition-all"
+                              placeholder="Ex: 2"
+                            />
+                          </div>
+                          <div>
+                            <label htmlFor="placesGarage" className="block text-sm font-medium text-fuchs-black mb-2">
+                              Places de garage
+                            </label>
+                            <input
+                              type="number"
+                              id="placesGarage"
+                              name="placesGarage"
+                              min="0"
+                              value={formData.placesGarage}
+                              onChange={handleChange}
+                              className="w-full px-4 py-3 bg-fuchs-white border border-fuchs-black/10 rounded-lg focus:ring-2 focus:ring-fuchs-gold focus:border-transparent transition-all"
+                              placeholder="Ex: 1"
+                            />
+                          </div>
+                        </div>
+                      </>
+                    )}
 
-                {/* Pièces */}
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-6">
-                  <div>
-                    <label htmlFor="nombrePieces" className="block text-sm font-medium text-fuchs-black mb-2">
-                      <DoorOpen className="w-4 h-4 inline mr-2 text-fuchs-gold" />
-                      Pièces *
-                    </label>
-                    <select
-                      id="nombrePieces"
-                      name="nombrePieces"
-                      required
-                      value={formData.nombrePieces}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 bg-fuchs-white border border-fuchs-black/10 rounded-lg focus:ring-2 focus:ring-fuchs-gold focus:border-transparent transition-all"
-                    >
-                      <option value="">--</option>
-                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => (
-                        <option key={n} value={n}>{n}</option>
-                      ))}
-                      <option value="10+">10+</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label htmlFor="nombreChambres" className="block text-sm font-medium text-fuchs-black mb-2">
-                      <BedDouble className="w-4 h-4 inline mr-2 text-fuchs-gold" />
-                      Chambres *
-                    </label>
-                    <select
-                      id="nombreChambres"
-                      name="nombreChambres"
-                      required
-                      value={formData.nombreChambres}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 bg-fuchs-white border border-fuchs-black/10 rounded-lg focus:ring-2 focus:ring-fuchs-gold focus:border-transparent transition-all"
-                    >
-                      <option value="">--</option>
-                      {[0, 1, 2, 3, 4, 5, 6, 7, 8].map(n => (
-                        <option key={n} value={n}>{n}</option>
-                      ))}
-                      <option value="8+">8+</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label htmlFor="nombreSallesDeBain" className="block text-sm font-medium text-fuchs-black mb-2">
-                      <Bath className="w-4 h-4 inline mr-2 text-fuchs-gold" />
-                      Salles de bain *
-                    </label>
-                    <select
-                      id="nombreSallesDeBain"
-                      name="nombreSallesDeBain"
-                      required
-                      value={formData.nombreSallesDeBain}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 bg-fuchs-white border border-fuchs-black/10 rounded-lg focus:ring-2 focus:ring-fuchs-gold focus:border-transparent transition-all"
-                    >
-                      <option value="">--</option>
-                      {[1, 2, 3, 4, 5].map(n => (
-                        <option key={n} value={n}>{n}</option>
-                      ))}
-                      <option value="5+">5+</option>
-                    </select>
-                  </div>
-                </div>
+                    {/* Appartement */}
+                    {formData.typeBien === 'appartement' && (
+                      <>
+                        <div className="grid md:grid-cols-2 gap-6">
+                          <div>
+                            <label htmlFor="surfaceHabitable" className="block text-sm font-medium text-fuchs-black mb-2">
+                              <Ruler className="w-4 h-4 inline mr-2 text-fuchs-gold" />
+                              Surface habitable (m²) *
+                            </label>
+                            <input
+                              type="number"
+                              id="surfaceHabitable"
+                              name="surfaceHabitable"
+                              required
+                              min="1"
+                              value={formData.surfaceHabitable}
+                              onChange={handleChange}
+                              className="w-full px-4 py-3 bg-fuchs-white border border-fuchs-black/10 rounded-lg focus:ring-2 focus:ring-fuchs-gold focus:border-transparent transition-all"
+                              placeholder="Ex: 75"
+                            />
+                          </div>
+                          <div>
+                            <label htmlFor="nombrePieces" className="block text-sm font-medium text-fuchs-black mb-2">
+                              <DoorOpen className="w-4 h-4 inline mr-2 text-fuchs-gold" />
+                              Nombre de pièces *
+                            </label>
+                            <input
+                              type="number"
+                              id="nombrePieces"
+                              name="nombrePieces"
+                              required
+                              min="1"
+                              value={formData.nombrePieces}
+                              onChange={handleChange}
+                              className="w-full px-4 py-3 bg-fuchs-white border border-fuchs-black/10 rounded-lg focus:ring-2 focus:ring-fuchs-gold focus:border-transparent transition-all"
+                              placeholder="Ex: 3"
+                            />
+                          </div>
+                        </div>
+                        <div className="grid md:grid-cols-2 gap-6">
+                          <div>
+                            <label htmlFor="anneeConstruction" className="block text-sm font-medium text-fuchs-black mb-2">
+                              <Calendar className="w-4 h-4 inline mr-2 text-fuchs-gold" />
+                              Année de construction *
+                            </label>
+                            <input
+                              type="number"
+                              id="anneeConstruction"
+                              name="anneeConstruction"
+                              required
+                              min="1800"
+                              max={new Date().getFullYear()}
+                              value={formData.anneeConstruction}
+                              onChange={handleChange}
+                              className="w-full px-4 py-3 bg-fuchs-white border border-fuchs-black/10 rounded-lg focus:ring-2 focus:ring-fuchs-gold focus:border-transparent transition-all"
+                              placeholder="Ex: 2010"
+                            />
+                          </div>
+                          <div>
+                            <label htmlFor="placesParking" className="block text-sm font-medium text-fuchs-black mb-2">
+                              Places de parking
+                            </label>
+                            <input
+                              type="number"
+                              id="placesParking"
+                              name="placesParking"
+                              min="0"
+                              value={formData.placesParking}
+                              onChange={handleChange}
+                              className="w-full px-4 py-3 bg-fuchs-white border border-fuchs-black/10 rounded-lg focus:ring-2 focus:ring-fuchs-gold focus:border-transparent transition-all"
+                              placeholder="Ex: 1"
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <label htmlFor="placesGarage" className="block text-sm font-medium text-fuchs-black mb-2">
+                            Places de garage
+                          </label>
+                          <input
+                            type="number"
+                            id="placesGarage"
+                            name="placesGarage"
+                            min="0"
+                            value={formData.placesGarage}
+                            onChange={handleChange}
+                            className="w-full px-4 py-3 bg-fuchs-white border border-fuchs-black/10 rounded-lg focus:ring-2 focus:ring-fuchs-gold focus:border-transparent transition-all"
+                            placeholder="Ex: 1"
+                          />
+                        </div>
+                      </>
+                    )}
 
-                {/* Année et état */}
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <label htmlFor="anneeConstruction" className="block text-sm font-medium text-fuchs-black mb-2">
-                      <Calendar className="w-4 h-4 inline mr-2 text-fuchs-gold" />
-                      Année de construction
-                    </label>
-                    <input
-                      type="number"
-                      id="anneeConstruction"
-                      name="anneeConstruction"
-                      min="1800"
-                      max={new Date().getFullYear()}
-                      value={formData.anneeConstruction}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 bg-fuchs-white border border-fuchs-black/10 rounded-lg focus:ring-2 focus:ring-fuchs-gold focus:border-transparent transition-all"
-                      placeholder="Ex: 1990"
-                    />
+                    {/* Terrain */}
+                    {formData.typeBien === 'terrain' && (
+                      <>
+                        <div className="grid md:grid-cols-2 gap-6">
+                          <div>
+                            <label htmlFor="surfaceTerrain" className="block text-sm font-medium text-fuchs-black mb-2">
+                              <LandPlot className="w-4 h-4 inline mr-2 text-fuchs-gold" />
+                              Surface du terrain (m²) *
+                            </label>
+                            <input
+                              type="number"
+                              id="surfaceTerrain"
+                              name="surfaceTerrain"
+                              required
+                              min="1"
+                              value={formData.surfaceTerrain}
+                              onChange={handleChange}
+                              className="w-full px-4 py-3 bg-fuchs-white border border-fuchs-black/10 rounded-lg focus:ring-2 focus:ring-fuchs-gold focus:border-transparent transition-all"
+                              placeholder="Ex: 1000"
+                            />
+                          </div>
+                          <div>
+                            <label htmlFor="viabilise" className="block text-sm font-medium text-fuchs-black mb-2">
+                              Viabilisé *
+                            </label>
+                            <select
+                              id="viabilise"
+                              name="viabilise"
+                              required
+                              value={formData.viabilise}
+                              onChange={handleChange}
+                              className="w-full px-4 py-3 bg-fuchs-white border border-fuchs-black/10 rounded-lg focus:ring-2 focus:ring-fuchs-gold focus:border-transparent transition-all"
+                            >
+                              <option value="">Sélectionnez</option>
+                              <option value="oui">Oui</option>
+                              <option value="non">Non</option>
+                            </select>
+                          </div>
+                        </div>
+                      </>
+                    )}
+
+                    {/* Local professionnel */}
+                    {formData.typeBien === 'local-professionnel' && (
+                      <>
+                        <div className="grid md:grid-cols-2 gap-6">
+                          <div>
+                            <label htmlFor="surfaceHabitable" className="block text-sm font-medium text-fuchs-black mb-2">
+                              <Ruler className="w-4 h-4 inline mr-2 text-fuchs-gold" />
+                              Surface (m²) *
+                            </label>
+                            <input
+                              type="number"
+                              id="surfaceHabitable"
+                              name="surfaceHabitable"
+                              required
+                              min="1"
+                              value={formData.surfaceHabitable}
+                              onChange={handleChange}
+                              className="w-full px-4 py-3 bg-fuchs-white border border-fuchs-black/10 rounded-lg focus:ring-2 focus:ring-fuchs-gold focus:border-transparent transition-all"
+                              placeholder="Ex: 150"
+                            />
+                          </div>
+                          <div>
+                            <label htmlFor="anneeConstruction" className="block text-sm font-medium text-fuchs-black mb-2">
+                              <Calendar className="w-4 h-4 inline mr-2 text-fuchs-gold" />
+                              Année de construction
+                            </label>
+                            <input
+                              type="number"
+                              id="anneeConstruction"
+                              name="anneeConstruction"
+                              min="1800"
+                              max={new Date().getFullYear()}
+                              value={formData.anneeConstruction}
+                              onChange={handleChange}
+                              className="w-full px-4 py-3 bg-fuchs-white border border-fuchs-black/10 rounded-lg focus:ring-2 focus:ring-fuchs-gold focus:border-transparent transition-all"
+                              placeholder="Ex: 2015"
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <label htmlFor="placesParking" className="block text-sm font-medium text-fuchs-black mb-2">
+                            Places de parking
+                          </label>
+                          <input
+                            type="number"
+                            id="placesParking"
+                            name="placesParking"
+                            min="0"
+                            value={formData.placesParking}
+                            onChange={handleChange}
+                            className="w-full px-4 py-3 bg-fuchs-white border border-fuchs-black/10 rounded-lg focus:ring-2 focus:ring-fuchs-gold focus:border-transparent transition-all"
+                            placeholder="Ex: 3"
+                          />
+                        </div>
+                      </>
+                    )}
                   </div>
-                  <div>
-                    <label htmlFor="etatGeneral" className="block text-sm font-medium text-fuchs-black mb-2">
-                      État général
-                    </label>
-                    <select
-                      id="etatGeneral"
-                      name="etatGeneral"
-                      value={formData.etatGeneral}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 bg-fuchs-white border border-fuchs-black/10 rounded-lg focus:ring-2 focus:ring-fuchs-gold focus:border-transparent transition-all"
-                    >
-                      <option value="">Sélectionnez</option>
-                      <option value="neuf">Neuf</option>
-                      <option value="excellent">Excellent état</option>
-                      <option value="bon">Bon état</option>
-                      <option value="rafraichir">À rafraîchir</option>
-                      <option value="renover">À rénover</option>
-                    </select>
-                  </div>
-                </div>
+                )}
               </div>
 
               {/* Section: Informations complémentaires */}
@@ -469,26 +643,6 @@ function EstimationForm() {
                 </h2>
                 
                 <div className="space-y-6">
-                  <div>
-                    <label htmlFor="parking" className="block text-sm font-medium text-fuchs-black mb-2">
-                      Stationnement
-                    </label>
-                    <select
-                      id="parking"
-                      name="parking"
-                      value={formData.parking}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 bg-fuchs-white border border-fuchs-black/10 rounded-lg focus:ring-2 focus:ring-fuchs-gold focus:border-transparent transition-all"
-                    >
-                      <option value="">Sélectionnez</option>
-                      <option value="aucun">Aucun</option>
-                      <option value="rue">Stationnement rue</option>
-                      <option value="place">Place de parking</option>
-                      <option value="garage">Garage</option>
-                      <option value="multiple">Plusieurs places/garages</option>
-                    </select>
-                  </div>
-
                   <div>
                     <label htmlFor="commentaires" className="block text-sm font-medium text-fuchs-black mb-2">
                       Commentaires ou précisions

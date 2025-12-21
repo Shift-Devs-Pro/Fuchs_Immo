@@ -16,9 +16,10 @@ import { Calculator } from 'lucide-react'
 export default function EstimationSection() {
   const router = useRouter()
   const [formData, setFormData] = useState({
-    ville: '',
-    typeBien: '',
-    surface: ''
+    numero: '',
+    rue: '',
+    codePostal: '',
+    ville: ''
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -31,9 +32,10 @@ export default function EstimationSection() {
     
     // Construire l'URL avec les paramètres
     const params = new URLSearchParams()
+    if (formData.numero) params.set('numero', formData.numero)
+    if (formData.rue) params.set('rue', formData.rue)
+    if (formData.codePostal) params.set('codePostal', formData.codePostal)
     if (formData.ville) params.set('ville', formData.ville)
-    if (formData.typeBien) params.set('typeBien', formData.typeBien)
-    if (formData.surface) params.set('surface', formData.surface)
     
     const queryString = params.toString()
     router.push(`/estimation${queryString ? `?${queryString}` : ''}`)
@@ -56,7 +58,52 @@ export default function EstimationSection() {
 
         <div className="max-w-4xl mx-auto">
           <form onSubmit={handleSubmit} className="bg-fuchs-white shadow-soft p-8 rounded">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+              <div>
+                <label htmlFor="numero" className="block text-sm font-medium mb-2">
+                  N°
+                </label>
+                <input
+                  type="text"
+                  id="numero"
+                  name="numero"
+                  value={formData.numero}
+                  onChange={handleChange}
+                  placeholder="Ex: 15"
+                  className="w-full px-4 py-3 border border-fuchs-cream rounded focus:outline-none focus:ring-2 focus:ring-fuchs-gold"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="rue" className="block text-sm font-medium mb-2">
+                  Rue
+                </label>
+                <input
+                  type="text"
+                  id="rue"
+                  name="rue"
+                  value={formData.rue}
+                  onChange={handleChange}
+                  placeholder="Ex: Rue de la Paix"
+                  className="w-full px-4 py-3 border border-fuchs-cream rounded focus:outline-none focus:ring-2 focus:ring-fuchs-gold"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="codePostal" className="block text-sm font-medium mb-2">
+                  Code postal
+                </label>
+                <input
+                  type="text"
+                  id="codePostal"
+                  name="codePostal"
+                  value={formData.codePostal}
+                  onChange={handleChange}
+                  placeholder="Ex: 67000"
+                  className="w-full px-4 py-3 border border-fuchs-cream rounded focus:outline-none focus:ring-2 focus:ring-fuchs-gold"
+                />
+              </div>
+
               <div>
                 <label htmlFor="ville" className="block text-sm font-medium mb-2">
                   Ville
@@ -68,40 +115,6 @@ export default function EstimationSection() {
                   value={formData.ville}
                   onChange={handleChange}
                   placeholder="Ex: Strasbourg"
-                  className="w-full px-4 py-3 border border-fuchs-cream rounded focus:outline-none focus:ring-2 focus:ring-fuchs-gold"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="typeBien" className="block text-sm font-medium mb-2">
-                  Type de bien
-                </label>
-                <select
-                  id="typeBien"
-                  name="typeBien"
-                  value={formData.typeBien}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-fuchs-cream rounded focus:outline-none focus:ring-2 focus:ring-fuchs-gold"
-                >
-                  <option value="">Sélectionnez</option>
-                  <option value="appartement">Appartement</option>
-                  <option value="maison">Maison</option>
-                  <option value="terrain">Terrain</option>
-                </select>
-              </div>
-
-              <div>
-                <label htmlFor="surface" className="block text-sm font-medium mb-2">
-                  Surface (m²)
-                </label>
-                <input
-                  type="number"
-                  id="surface"
-                  name="surface"
-                  value={formData.surface}
-                  onChange={handleChange}
-                  placeholder="Ex: 120"
-                  min="1"
                   className="w-full px-4 py-3 border border-fuchs-cream rounded focus:outline-none focus:ring-2 focus:ring-fuchs-gold"
                 />
               </div>
